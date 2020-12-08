@@ -38,7 +38,7 @@ public class DoctorDao {
 		return doc;
 	}
 	
-	public Doctors[] getNameFromQl(String dep) {
+	public Doctors[] getNameFromDep(String dep) {
 		DataCon data = new DataCon();
 		Connection con = data.getCon();
 		Doctors[] doc = null;
@@ -48,13 +48,15 @@ public class DoctorDao {
 			ResultSet rs = st.executeQuery(query);
 			rs.next();
 			int count = rs.getInt("count(*)");
-			query = "select doctors.docName from doctors inner join depertment on doctors.depId = depertment.depId where depertment.depName = \""+dep+"\" order by doctors.docName desc;";
+			query = "select doctors.docId, doctors.docName, doctors.visitingTime from doctors inner join depertment on doctors.depId = depertment.depId where depertment.depName = \""+dep+"\" order by doctors.docName desc;";
 			rs = st.executeQuery(query);
 			doc = new Doctors[count];
 			int i = 0;
 			while(rs.next()) {
 				doc[i] = new Doctors();
 				doc[i].setName(rs.getString("docName"));
+				doc[i].setTime(rs.getString("visitingTime"));
+				doc[i].setId(rs.getString("docId"));
 				i++;
 			}
 		} catch (SQLException e) {
